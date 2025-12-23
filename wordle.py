@@ -7,29 +7,46 @@ class Answer(Enum):
     GREEN_CORRECT_GUESS = "success"
 
 
-def get_word_map(word: str) -> dict[int, str]:
-    # assuming we are not doing repetition for now
-    word_map = {index: char for index, char in enumerate(word)}
+def get_word_map(word: str) -> tuple[dict[int, str], dict[int, str]]:
 
-    return word_map
+    count_map = {}
+    position_map = {}
+    # word_map = {index: char for index, char in enumerate(word)}
 
-
-def guess_attempt(guess_word: str, answer: str) -> dict[int, str]:
-    # ignore the return type. WIP still
-    guess_map = get_word_map(guess_word.lower())
-    answer_map = get_word_map(answer)
-    guess_result: dict[int, str] = {}
-    for guess_position, guess_letter in guess_map.items():
-        if guess_letter not in answer_map.values():
-            guess_result[guess_position] = Answer.GREY_COMPLETE_MISS.value
-        elif guess_map[guess_position] != answer_map[guess_position]:
-            guess_result[guess_position] = Answer.YELLOW_PARTIAL_GUESS.value
+    for index, char in enumerate(word):
+        if char not in count_map.keys():
+            count_map[char] = 1
         else:
-            guess_result[guess_position] = Answer.GREEN_CORRECT_GUESS.value
-    return guess_result
+            count_map[char] += 1
+        position_map[index] = char
 
-    # return guess_map, answer_map
+    return count_map, position_map
 
 
-if __name__ == "__main__":
-    print(guess_attempt("click", "brick"))
+def guess_attempt(guess_input: str, answer: str) -> dict[int, str]:
+    # ignore the return type. WIP still
+
+    result: dict[int, str] = {}
+    guess_count_map, guess_position_map = get_word_map(guess_input.lower())
+    answer_count_map, answer_position_map = get_word_map(answer)
+    # print(answer_count_map)
+
+    # pass 1: greens check
+    for index, char in guess_position_map.items():
+        if answer_position_map[index] == char:
+            result[index] = Answer.GREEN_CORRECT_GUESS.value
+            answer_count_map[char] -= 1
+
+
+    #pass 2: check for yellows and greys
+    for index, char in guess_position_map.items():
+        if index in result:
+            continue
+        elif answer_count_map.get(char, 0) > 0:
+            result[index] = Answer.YELLOW_PARTIAL_GUESS.value
+            answer_count_map[char] -= 1
+        else:
+            result[index] = Answer.GREY_COMPLETE_MISS.value
+    return result
+
+
