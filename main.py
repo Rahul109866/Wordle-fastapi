@@ -9,4 +9,4 @@ app = FastAPI()
 @app.get("/{guess}")
 def guess(guess: str):
     answer = "chalk"
-    return guess_attempt(guess, answer)
+    return guess_attempt(guess.lower(), answer)
