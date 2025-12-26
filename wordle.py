@@ -23,10 +23,10 @@ def get_word_map(word: str) -> tuple[dict[int, str], dict[int, str]]:
     return count_map, position_map
 
 
-def guess_attempt(guess_input: str, answer: str) -> dict[int, str]:
+def guess_attempt(guess_input: str, answer: str) -> list[str]:
     # ignore the return type. WIP still
 
-    result: dict[int, str] = {}
+    result: list[None] = [None, None, None, None, None]
     guess_count_map, guess_position_map = get_word_map(guess_input.lower())
     answer_count_map, answer_position_map = get_word_map(answer)
     # print(answer_count_map)
@@ -40,7 +40,7 @@ def guess_attempt(guess_input: str, answer: str) -> dict[int, str]:
 
     #pass 2: check for yellows and greys
     for index, char in guess_position_map.items():
-        if index in result:
+        if result[index] is not None:
             continue
         elif answer_count_map.get(char, 0) > 0:
             result[index] = Answer.YELLOW_PARTIAL_GUESS.value
@@ -48,5 +48,8 @@ def guess_attempt(guess_input: str, answer: str) -> dict[int, str]:
         else:
             result[index] = Answer.GREY_COMPLETE_MISS.value
     return result
+    
 
 
+if __name__ == "__main__":#
+    print(guess_attempt("brock", "black"))
