@@ -7,3 +7,7 @@ with open(r"resources\source.txt", 'r') as f, open(r"resources\answer_list.txt",
                 out.write(word + '\n')
             else:
                 print(f"'{word}' is not 5 letters long")
+
+
+def foo():
+    pass

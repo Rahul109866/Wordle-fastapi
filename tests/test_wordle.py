@@ -1,5 +1,5 @@
 import pytest
-from wordle import guess_attempt
+from wordle.engine import guess_attempt
 
 answer = "chalk"
 
@@ -7,15 +7,15 @@ answer = "chalk"
 @pytest.mark.parametrize(
     "guess,expected",
     [
-        ("batch", {0: "miss", 1: "partial", 2: "miss", 3: "partial", 4: "partial"}),
-        ("wench", {0: "miss", 1: "miss", 2: "miss", 3: "partial", 4: "partial"}),
+        ("batch", ["miss", "partial", "miss", "partial", "partial"]),
+        ("wench", ["miss", "miss", "miss", "partial", "partial"]),
         (
             "chalk",
-            {0: "success", 1: "success", 2: "success", 3: "success", 4: "success"},
+            ["success", "success", "success", "success", "success"],
         ),
     ],
 )
-def test_guess_attempt(guess: str, expected: str):
+def test_guess_attempt(guess: str, expected: list[str]):
     result = guess_attempt(guess, answer)
     assert result == expected
 
@@ -25,15 +25,15 @@ def test_guess_attempt(guess: str, expected: str):
     [
         (
             "Chalk",
-            {0: "success", 1: "success", 2: "success", 3: "success", 4: "success"},
+            ["success", "success", "success", "success", "success"],
         ),
         (
             "CHaLk",
-            {0: "success", 1: "success", 2: "success", 3: "success", 4: "success"},
+            ["success", "success", "success", "success", "success"],
         ),
     ],
 )
-def test_guess_attempt_with_case(guess: str, expected: str):
+def test_guess_attempt_with_case(guess: str, expected: list[str]):
     result = guess_attempt(guess, answer)
     assert result == expected
 
@@ -44,22 +44,22 @@ def test_guess_attempt_with_case(guess: str, expected: str):
         (
             "click",
             "black",
-            {0: "miss", 1: "success", 2: "miss", 3: "success", 4: "success"},
+            ["miss", "success", "miss", "success", "success"],
         ),
-        ("catch", "black", {0: "miss", 1: "partial", 2: "miss", 3: "success", 4: "miss"}),
+        ("catch", "black", ["miss", "partial", "miss", "success", "miss"]),
         (
             "black",
             "catch",
-            {0: "miss", 1: "miss", 2: "partial", 3: "success", 4: "miss"},
+            ["miss", "miss", "partial", "success", "miss"],
         ),
         (
             "cocky",
             "black",
-            {0: "partial", 1: "miss", 2: "miss", 3: "partial", 4: "miss"},
+            ["partial", "miss", "miss", "partial", "miss"],
         ),
     ],
 )
-def test_duplicate_attempt(guess: str, answer: str, expected: dict[int:str]):
+def test_duplicate_attempt(guess: str, answer: str, expected: list[str]):
 
     result = guess_attempt(guess, answer)
     assert result == expected
