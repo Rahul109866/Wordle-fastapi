@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Make a Guess</title>
+</head>
+
+<body>
+    <h2>Enter your guess</h2>
+
+    <form method="post" action="/guess">
+        <label for="guess">Guess:</label>
+        <input
+            type="text"
+            id="guess"
+            name="guess"
+            maxlength="5"
+            value="{{ guess | default('') }}"
+        >
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    {% if result %}
+        <p>Result:</p>
+        <ul>
+            {% for r in result %}
+                <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
